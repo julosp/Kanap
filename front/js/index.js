@@ -8,36 +8,25 @@ async function getProducts() {
   }
 }
 
-async function renderProducts(){
-    let products = await getProducts();
-    let newHtml = '';
-    products.forEach(product => {
-        let htmlSegment = ` <a href="#"
+async function renderProducts() {
+  let products = await getProducts();
+  let newHtml = "";
+  products.forEach((product) => {
+    let htmlSegment = ` <a href="./product.html?_id${product._id}">
                             <article>
                             <img src="${product.imageUrl}" alt="${product.altTxt}" >
                             <h3 class="productName">${product.name}</h3>
                             <p class="productDescription">${product.description}</p>
                             </article>
-                            </a>`;
+                            </a>
+                            `;
 
-        newHtml += htmlSegment;
-    });
+    newHtml += htmlSegment;
+  });
 
-    let container = document.getElementById("items");
-    container.innerHTML = newHtml
+  let container = document.getElementById("items");
+  container.innerHTML = newHtml;
 }
-
 
 renderProducts();
 
-
-
-
-
-
-
-
-
-
-
-console.log(getProducts());
