@@ -120,16 +120,21 @@ async function addToCart() {
       this.color = color;
       this.quantity = quantity;
     }
+    }
+    let productArray = new productInCart(productId,checkColor(),checkQuantity())
+    let areFalsy = Object.values(productArray).every(value => value);
+    if (areFalsy === false){
+      console.log("non")
+      
+      return false
+    } else {
+      window.localStorage.setItem("productArray",JSON.stringify(productArray))
+      console.log(window.localStorage.productArray)
+      console.log(productArray)
+    }
   }
-  let productArray = new productInCart(productId,checkColor(),checkQuantity())
-  let areFalsy = Object.values(productArray).every(value => value);
-  if (areFalsy === false){
-    console.log("non")
-  } else {
-    console.log("top ")
-  }
-  
-  }
+  console.log(localStorage.productArray)
+
   
   
 
