@@ -68,17 +68,17 @@ async function renderColor() {
   }
 }
 
-async function renderAll(){
+async function renderAll() {
   renderPrice();
   renderName();
   renderImg();
   renderDescription();
   renderColor();
 }
-console.log(renderAll())
+console.log(renderAll());
 
-cartBtn = document.getElementById('addToCart')
-cartBtn.addEventListener("click", addToCart)
+cartBtn = document.getElementById("addToCart");
+cartBtn.addEventListener("click", addToCart);
 
 async function addToCart() {
   //RECUP ID
@@ -86,57 +86,70 @@ async function addToCart() {
   let productId = product._id;
   //RECUP COLOR
   //CHECK IF COLOR IS VALID
-  function checkColor(){
-    let select = document.getElementById('colors');
-    let colorValue = select.value
-    if (colorValue === ""){
+  function checkColor() {
+    let select = document.getElementById("colors");
+    let colorValue = select.value;
+    if (colorValue === "") {
       //alert("Veuillez choissir une couleur")
-      return false
+      return false;
     } else {
-      return colorValue
+      return colorValue;
     }
   }
- 
+
   //RECUP QUANTITY
   //CHECK IF QUANTITY IS VALID
-  function checkQuantity(){
-    let quantityInput = document.getElementById('quantity')
-    let quantity = quantityInput.value
-    if (quantity === "0"){
+  function checkQuantity() {
+    let quantityInput = document.getElementById("quantity");
+    let quantity = quantityInput.value;
+    if (quantity === "0") {
       //alert("Veuillez ajouter un nombre d'article")
-      return false
-    } else if (quantity < "0"){
+      return false;
+    } else if (quantity < "0") {
       //alert("Veuillez ajouter un nombre d'article valide")
-      return false
+      return false;
     } else {
-      return quantity
+      return quantity;
     }
   }
 
-
   class productInCart {
-    constructor(id,color,quantity){
+    constructor(id, color, quantity) {
       this.id = id;
       this.color = color;
       this.quantity = quantity;
     }
-    }
-    let productArray = new productInCart(productId,checkColor(),checkQuantity())
-    let areFalsy = Object.values(productArray).every(value => value);
-    if (areFalsy === false){
-      console.log("non")
-      
+  }
+
+  let productArray = new productInCart(
+    productId,
+    checkColor(),
+    checkQuantity()
+  );
+  console.log(productArray);
+
+  let areFalsy = Object.values(productArray).every(value => value);
+    if (areFalsy === false){ 
       return false
+    } 
+
+  function saveBasket(basket) {
+    localStorage.setItem("basket", JSON.stringify(basket));
+  }
+  function getBasket() {
+    let basket = localStorage.getItem("basket");
+    if (basket == null) {
+      return [];
     } else {
-      window.localStorage.setItem("productArray",JSON.stringify(productArray))
-      console.log(window.localStorage.productArray)
-      console.log(productArray)
+      return JSON.parse(basket);
     }
   }
-  console.log(localStorage.productArray)
+  function addBasket(product) {
+    let basket = getBasket();
+    basket.push(product);
+    saveBasket(basket);
+  }
 
-  
-  
+  addBasket(productArray);
 
-
-
+}
