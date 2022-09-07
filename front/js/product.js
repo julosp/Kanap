@@ -128,10 +128,10 @@ async function addToCart() {
   );
   console.log(productArray);
 
-  let areFalsy = Object.values(productArray).every(value => value);
-    if (areFalsy === false){ 
-      return false
-    } 
+  let areFalsy = Object.values(productArray).every((value) => value);
+  if (areFalsy === false) {
+    return false;
+  }
 
   function saveBasket(basket) {
     localStorage.setItem("basket", JSON.stringify(basket));
@@ -146,10 +146,17 @@ async function addToCart() {
   }
   function addBasket(product) {
     let basket = getBasket();
-    basket.push(product);
+    let foundProduct = basket.find((p) => p.id == product.id);
+    let foundColor = basket.find((p) => p.color == product.color);
+    console.log(foundColor)
+    if (foundProduct != undefined) {
+      foundProduct.quantity++;
+    } else {
+      product.quantity = 1;
+      basket.push(product);
+    }
     saveBasket(basket);
   }
 
   addBasket(productArray);
-
 }
