@@ -9,33 +9,39 @@ async function getBasket() {
   }
 }
 
-
-
-async function getProductById(){
+async function getProductById() {
+  let result = [];
+  let basket = await getBasket();
   try {
-    let basket = await getBasket();
     for (let productBasket of basket) {
-      let response = await fetch(`http://localhost:3000/api/products/${productBasket.id}`)
-
-      if (!response.ok){
-        throw new Error(`Error! status ${response.status}`);
-      }
-
-      let result = await response.json()
-      return result
+      let response = await fetch(
+        `http://localhost:3000/api/products/${productBasket.id}`
+      );
+      result.push(await response.json());
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
+
+  for (let i = 0; i < basket.length; i++){
+    objIndex = basket.findIndex((obj => obj.colors == i))
+    console.log(basket[objIndex])
+  }
+  console.log(result)
+  return result;
 }
 
 
 
 
+
+
+
 async function newHtml() {
-  let product = await getProductById()
+  let product = await getProductById();
   let newHtml = "";
-  let htmlSegment = ` <article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
+  product.forEach((product) => {
+    let htmlSegment = ` <article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
                           <div class="cart__item__img">
                             <img src="${product.imageUrl}" alt="${product.altTxt}">
                           </div>
@@ -59,7 +65,7 @@ async function newHtml() {
                             `;
 
     newHtml += htmlSegment;
-
+  });
   let container = document.getElementById("cart__items");
   container.innerHTML = newHtml;
 }
