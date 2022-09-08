@@ -152,7 +152,7 @@ async function addToCart() {
     if (foundProduct != undefined) {
       foundProduct.quantity++;
     } else {
-      product.quantity = 1;
+      product.quantity = checkQuantity();
       basket.push(product);
     }
     saveBasket(basket);

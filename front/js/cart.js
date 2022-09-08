@@ -6,8 +6,10 @@ async function getBasket() {
     console.error();
   } else {
     return JSON.parse(basket);
+
   }
 }
+console.log(getBasket())
 
 async function getProductById() {
   let result = [];
@@ -22,30 +24,27 @@ async function getProductById() {
   } catch (err) {
     console.log(err);
   }
-
-  let newColor = (result,basket) => result.map((obj,i) =>(
-    {
-      ...obj,
-      colorSelected: basket[i].color
-    }
-  ));
-  result = newColor(result,basket)
-  return result
-
   
+
+  let newColor = (result, basket) =>
+    result.map((obj, i) => ({
+      ...obj,
+      colorSelected: basket[i].color,
+    }));
+  result = newColor(result, basket);
+  
+  let quantity = (result,basket) =>
+    result.map((obj, k) =>({
+      ...obj,
+      quantity: basket[k].quantity,
+    }))
+  result = quantity(result,basket)
+  return result;
 }
-
-
-
-
-
-
-
-
-
 
 async function newHtml() {
   let product = await getProductById();
+  //console.log(product)
   let newHtml = "";
   product.forEach((product) => {
     let htmlSegment = ` <article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
@@ -61,7 +60,7 @@ async function newHtml() {
                             <div class="cart__item__content__settings">
                               <div class="cart__item__content__settings__quantity">
                                 <p>Qté : </p>
-                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
                               </div>
                               <div class="cart__item__content__settings__delete">
                                 <p class="deleteItem">Supprimer</p>
@@ -76,5 +75,4 @@ async function newHtml() {
   let container = document.getElementById("cart__items");
   container.innerHTML = newHtml;
 }
-
 newHtml();
