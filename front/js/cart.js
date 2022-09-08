@@ -23,13 +23,20 @@ async function getProductById() {
     console.log(err);
   }
 
-  for (let i = 0; i < basket.length; i++){
-    objIndex = basket.findIndex((obj => obj.colors == i))
-    console.log(basket[objIndex])
-  }
-  console.log(result)
-  return result;
+  let newColor = (result,basket) => result.map((obj,i) =>(
+    {
+      ...obj,
+      colorSelected: basket[i].color
+    }
+  ));
+  result = newColor(result,basket)
+  return result
+
+  
 }
+
+
+
 
 
 
@@ -48,7 +55,7 @@ async function newHtml() {
                           <div class="cart__item__content">
                             <div class="cart__item__content__description">
                               <h2>${product.name}</h2>
-                              <p>${product.color}</p>
+                              <p>${product.colorSelected}</p>
                               <p>${product.price}€</p>
                             </div>
                             <div class="cart__item__content__settings">
