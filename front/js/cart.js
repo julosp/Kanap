@@ -6,10 +6,8 @@ async function getBasket() {
     console.error();
   } else {
     return JSON.parse(basket);
-
   }
 }
-console.log(getBasket())
 
 async function getProductById() {
   let result = [];
@@ -24,7 +22,6 @@ async function getProductById() {
   } catch (err) {
     console.log(err);
   }
-  
 
   let newColor = (result, basket) =>
     result.map((obj, i) => ({
@@ -32,19 +29,18 @@ async function getProductById() {
       colorSelected: basket[i].color,
     }));
   result = newColor(result, basket);
-  
-  let quantity = (result,basket) =>
-    result.map((obj, k) =>({
+
+  let quantity = (result, basket) =>
+    result.map((obj, k) => ({
       ...obj,
       quantity: basket[k].quantity,
-    }))
-  result = quantity(result,basket)
+    }));
+  result = quantity(result, basket);
   return result;
 }
 
 async function newHtml() {
   let product = await getProductById();
-  //console.log(product)
   let newHtml = "";
   product.forEach((product) => {
     let htmlSegment = ` <article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
@@ -76,3 +72,18 @@ async function newHtml() {
   container.innerHTML = newHtml;
 }
 newHtml();
+
+async function modifyQuantity() {
+  let product = await getProductById()
+  let itemQuantity = document.querySelectorAll(".itemQuantity");
+  console.log(itemQuantity)
+  for (let i = 0; i < itemQuantity.length; i++) {
+    itemQuantity[i].addEventListener("change", (event) => {
+      event.preventDefault();
+      let newQuantity = itemQuantity[i].value;
+      product[i].quantity = newQuantity
+      
+    });
+  }
+}
+modifyQuantity();
