@@ -74,16 +74,35 @@ async function newHtml() {
 newHtml();
 
 async function modifyQuantity() {
-  let product = await getProductById()
+  let product = await getProductById();
   let itemQuantity = document.querySelectorAll(".itemQuantity");
-  console.log(itemQuantity)
   for (let i = 0; i < itemQuantity.length; i++) {
     itemQuantity[i].addEventListener("change", (event) => {
       event.preventDefault();
       let newQuantity = itemQuantity[i].value;
-      product[i].quantity = newQuantity
-      
+      product[i].quantity = newQuantity;
+      productBasket[i].quantity = newQuantity;
+      localStorage.setItem("basket", JSON.stringify(productBasket));
     });
   }
 }
 modifyQuantity();
+
+async function deleteProduct(){
+  let product = await getProductById();
+  let deleteBtn = document.querySelectorAll(".deleteItem")
+  console.log(deleteBtn)
+  for (let i = 0; i < deleteBtn.length; i++){
+    deleteBtn[i].addEventListener('click', (event) =>{
+      event.preventDefault()
+      let deleteId = productBasket[i].id
+      let deleteColor = productBasket[i].color
+      productBasket = productBasket.filter(element => element.id !== deleteId || element.color !== deleteColor)
+      localStorage.setItem("basket", JSON.stringify(productBasket))
+      window.location.href = "cart.html"
+    })
+  }
+}
+deleteProduct()
+
+async function 
