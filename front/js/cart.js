@@ -83,26 +83,62 @@ async function modifyQuantity() {
       product[i].quantity = newQuantity;
       productBasket[i].quantity = newQuantity;
       localStorage.setItem("basket", JSON.stringify(productBasket));
+      window.location.href = "cart.html";
     });
   }
 }
 modifyQuantity();
 
-async function deleteProduct(){
+async function deleteProduct() {
   let product = await getProductById();
-  let deleteBtn = document.querySelectorAll(".deleteItem")
-  console.log(deleteBtn)
-  for (let i = 0; i < deleteBtn.length; i++){
-    deleteBtn[i].addEventListener('click', (event) =>{
-      event.preventDefault()
-      let deleteId = productBasket[i].id
-      let deleteColor = productBasket[i].color
-      productBasket = productBasket.filter(element => element.id !== deleteId || element.color !== deleteColor)
-      localStorage.setItem("basket", JSON.stringify(productBasket))
-      window.location.href = "cart.html"
-    })
+  let deleteBtn = document.querySelectorAll(".deleteItem");
+  for (let i = 0; i < deleteBtn.length; i++) {
+    deleteBtn[i].addEventListener("click", (event) => {
+      event.preventDefault();
+      let deleteId = productBasket[i].id;
+      let deleteColor = productBasket[i].color;
+      productBasket = productBasket.filter(
+        (element) => element.id !== deleteId || element.color !== deleteColor
+      );
+      localStorage.setItem("basket", JSON.stringify(productBasket));
+      window.location.href = "cart.html";
+    });
   }
 }
-deleteProduct()
+deleteProduct();
 
-async function 
+let totalPrice = [];
+let totalQuantity = [];
+
+async function calculatePrice() {
+  let product = await getProductById();
+  for (let i = 0; i < product.length; i++) {
+    let price = product[i].price;
+    let quantity = product[i].quantity;
+    let total = price * quantity;
+    totalPrice.push(total);
+    var priceTotal = totalPrice.reduce(function (a, b) {
+      return a + b;
+    }, 0);
+  }
+  let htmlPrice = document.getElementById("totalPrice");
+  htmlPrice.textContent = priceTotal;
+}
+calculatePrice();
+
+async function calculateQuantity() {
+  let product = await getProductById();
+  for (let i = 0; i < product.length; i++) {
+    let quantity = product[i].quantity;
+    totalQuantity.push(quantity);
+    var quantityTotal = totalQuantity.reduce(function (a, b) {
+      return +a + +b;
+    }, 0);
+    console.log(quantityTotal)
+    
+  }
+  let htmlArticle = document.getElementById("totalQuantity");
+  htmlArticle.textContent = quantityTotal;
+}
+
+calculateQuantity();
