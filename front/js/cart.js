@@ -83,7 +83,7 @@ async function modifyQuantity() {
       product[i].quantity = newQuantity;
       productBasket[i].quantity = newQuantity;
       localStorage.setItem("basket", JSON.stringify(productBasket));
-      window.location.href = "cart.html";
+      //window.location.href = "cart.html";
     });
   }
 }
@@ -101,7 +101,7 @@ async function deleteProduct() {
         (element) => element.id !== deleteId || element.color !== deleteColor
       );
       localStorage.setItem("basket", JSON.stringify(productBasket));
-      window.location.href = "cart.html";
+      //window.location.href = "cart.html";
     });
   }
 }
@@ -134,11 +134,95 @@ async function calculateQuantity() {
     var quantityTotal = totalQuantity.reduce(function (a, b) {
       return +a + +b;
     }, 0);
-    console.log(quantityTotal)
-    
+    console.log(quantityTotal);
   }
   let htmlArticle = document.getElementById("totalQuantity");
   htmlArticle.textContent = quantityTotal;
 }
 
 calculateQuantity();
+
+function sendForm() {
+  let orderBtn = document.getElementById("order");
+  orderBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    let contact = {
+      firstName: document.getElementById("firstName").value,
+      lastName: document.getElementById("lastName").value,
+      adress: document.getElementById("address").value,
+      city: document.getElementById("city").value,
+      email: document.getElementById("email").value,
+    };
+    console.log(contact);
+
+    function checkFirstName() {
+      let firstName = contact.firstName;
+      if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(firstName)) {
+        return true;
+      } else {
+        let errorMsg = document.getElementById("firstNameErrorMsg");
+        errorMsg.innerText = "Prénom invalide";
+      }
+    }
+
+    function checkLastName() {
+      let lastName = contact.lastName;
+      if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(lastName)) {
+        return true;
+      } else {
+        let errorMsg = document.getElementById("lastNameErrorMsg");
+        errorMsg.innerText = "Nom invalide";
+      }
+    }
+
+    function checkAdress() {
+      let address = contact.address;
+      if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(address)) {
+        return true;
+      } else {
+        let errorMsg = document.getElementById("addressErrorMsg");
+        errorMsg.innerText = "Adresse invalide";
+      }
+    }
+
+    function checkCity() {
+      let city = contact.city;
+      if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(city)) {
+        return true;
+      } else {
+        let errorMsg = document.getElementById("cityErrorMsg");
+        errorMsg.innerText = "Ville invalide";
+      }
+    }
+
+    function checkEmail() {
+      let email = contact.email;
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return true;
+      } else {
+        let errorMsg = document.getElementById("emailErrorMsg");
+        errorMsg.innerText = "Email invalide";
+      }
+    }
+
+    function checkValidity() {
+      if (
+        checkFirstName() &&
+        checkLastName() &&
+        checkAdress() &&
+        checkCity() &&
+        checkEmail()
+      ) {
+        localStorage.setItem("contact", JSON.stringify(contact));
+        return true;
+      } else {
+        alert(
+          "Formulaire invalide, veuillez verifier les informations entrées."
+        );
+      }
+    }
+    checkValidity();
+  });
+}
+sendForm();
