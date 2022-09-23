@@ -90,7 +90,7 @@ async function addToCart() {
     let select = document.getElementById("colors");
     let colorValue = select.value;
     if (colorValue === "") {
-      alert("Veuillez choissir une couleur")
+      alert("Veuillez choissir une couleur");
       return false;
     } else {
       return colorValue;
@@ -103,16 +103,17 @@ async function addToCart() {
     let quantityInput = document.getElementById("quantity");
     let quantity = quantityInput.value;
     if (quantity === "0") {
-      alert("Veuillez ajouter un nombre d'article")
+      alert("Veuillez ajouter un nombre d'article");
       return false;
     } else if (quantity < "0") {
-      alert("Veuillez ajouter un nombre d'article valide")
+      alert("Veuillez ajouter un nombre d'article valide");
       return false;
     } else {
       return quantity;
     }
   }
 
+  //PATERN CREATION D'OBJETS PRODUCT
   class productInCart {
     constructor(id, color, quantity) {
       this.id = id;
@@ -121,6 +122,7 @@ async function addToCart() {
     }
   }
 
+  //CREATION OBJECT VIA LES INPUTS
   let productArray = new productInCart(
     productId,
     checkColor(),
@@ -128,15 +130,19 @@ async function addToCart() {
   );
   console.log(productArray);
 
+  //SI INPUT RETOURN FALSE PAS D'AJOUT AU LOCALSTORAGE
   let areFalsy = Object.values(productArray).every((value) => value);
   if (areFalsy === false) {
     return false;
   }
 
+  //SI INPUT VALIDE AJOUT AU LOCAL STORAGE
   function saveBasket(basket) {
     localStorage.setItem("basket", JSON.stringify(basket));
   }
+
   function getBasket() {
+    
     let basket = localStorage.getItem("basket");
     if (basket == null) {
       return [];
@@ -149,7 +155,10 @@ async function addToCart() {
     let foundProduct = basket.find((p) => p.id == product.id);
     let foundColor = basket.find((p) => p.color == product.color);
     if (foundProduct != undefined && foundColor != undefined) {
-      foundProduct.quantity++;
+      var a =  parseInt(foundProduct.quantity);
+      var b = parseInt(quantity.value);
+      console.log(a+b)
+      foundProduct.quantity = a+b
     } else {
       product.quantity = checkQuantity();
       basket.push(product);

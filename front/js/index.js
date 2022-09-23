@@ -1,3 +1,4 @@
+//FETCH DE L'API
 async function getProducts() {
   let url = "http://localhost:3000/api/products";
   try {
@@ -9,6 +10,7 @@ async function getProducts() {
   }
 }
 
+//RENDU DES PRODUITS VIA L'API EN HTML
 async function renderProducts() {
   let products = await getProducts();
   let newHtml = "";
