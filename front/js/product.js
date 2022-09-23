@@ -90,7 +90,7 @@ async function addToCart() {
     let select = document.getElementById("colors");
     let colorValue = select.value;
     if (colorValue === "") {
-      //alert("Veuillez choissir une couleur")
+      alert("Veuillez choissir une couleur")
       return false;
     } else {
       return colorValue;
@@ -103,10 +103,10 @@ async function addToCart() {
     let quantityInput = document.getElementById("quantity");
     let quantity = quantityInput.value;
     if (quantity === "0") {
-      //alert("Veuillez ajouter un nombre d'article")
+      alert("Veuillez ajouter un nombre d'article")
       return false;
     } else if (quantity < "0") {
-      //alert("Veuillez ajouter un nombre d'article valide")
+      alert("Veuillez ajouter un nombre d'article valide")
       return false;
     } else {
       return quantity;
@@ -148,8 +148,7 @@ async function addToCart() {
     let basket = getBasket();
     let foundProduct = basket.find((p) => p.id == product.id);
     let foundColor = basket.find((p) => p.color == product.color);
-    console.log(foundColor)
-    if (foundProduct != undefined) {
+    if (foundProduct != undefined && foundColor != undefined) {
       foundProduct.quantity++;
     } else {
       product.quantity = checkQuantity();
@@ -157,6 +156,6 @@ async function addToCart() {
     }
     saveBasket(basket);
   }
-
+  alert("Produit ajouté au panier");
   addBasket(productArray);
 }

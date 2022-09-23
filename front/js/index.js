@@ -5,6 +5,7 @@ async function getProducts() {
     return await res.json();
   } catch (error) {
     console.log(error);
+    alert("Erreur lors du chargement, veuillez réessayer")
   }
 }
 

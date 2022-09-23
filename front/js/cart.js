@@ -1,5 +1,7 @@
+//RECUPERATION DU LOCAL STORAGE
 let productBasket = JSON.parse(localStorage.getItem("basket"));
 
+//RECUPERATION DU LOCAL STORAGE
 async function getBasket() {
   let basket = localStorage.getItem("basket");
   if (basket === null || basket == 0) {
@@ -9,6 +11,7 @@ async function getBasket() {
   }
 }
 
+//FETCH DE L'API EN FONCTION DE L'ID DES PRODUIT DANS LE LOCAL STORAGE
 async function getProductById() {
   let result = [];
   let basket = await getBasket();
@@ -23,6 +26,7 @@ async function getProductById() {
     console.log(err);
   }
 
+  //AJOUT DE LA COULEUR CHOISI AU PRODUIT FETCH
   let newColor = (result, basket) =>
     result.map((obj, i) => ({
       ...obj,
@@ -30,6 +34,7 @@ async function getProductById() {
     }));
   result = newColor(result, basket);
 
+  //AJOUT DE LA QUANTITER CHOISI AU PRODUIT FETCH
   let quantity = (result, basket) =>
     result.map((obj, k) => ({
       ...obj,
@@ -39,6 +44,7 @@ async function getProductById() {
   return result;
 }
 
+//CREATION DU HTML POUR CHAQUE PRODUIT DANS LE PANIER
 async function newHtml() {
   let product = await getProductById();
   let newHtml = "";
@@ -73,6 +79,7 @@ async function newHtml() {
 }
 newHtml();
 
+//MODIFICATION DES QUANTITER
 async function modifyQuantity() {
   let product = await getProductById();
   let itemQuantity = document.querySelectorAll(".itemQuantity");
@@ -82,8 +89,18 @@ async function modifyQuantity() {
       let newQuantity = itemQuantity[i].value;
       product[i].quantity = newQuantity;
       productBasket[i].quantity = newQuantity;
-      localStorage.setItem("basket", JSON.stringify(productBasket));
-      //window.location.href = "cart.html";
+      if (productBasket[i].quantity === "0"){
+        let deleteId = productBasket[i].id;
+        let deleteColor = productBasket[i].color;
+        productBasket = productBasket.filter(
+          (element) => element.id !== deleteId || element.color !== deleteColor
+        );
+        localStorage.setItem("basket", JSON.stringify(productBasket));
+        window.location.href = "cart.html";
+      } else {
+        localStorage.setItem("basket", JSON.stringify(productBasket));
+        window.location.href = "cart.html";
+      }
     });
   }
 }
@@ -101,7 +118,7 @@ async function deleteProduct() {
         (element) => element.id !== deleteId || element.color !== deleteColor
       );
       localStorage.setItem("basket", JSON.stringify(productBasket));
-      //window.location.href = "cart.html";
+      window.location.href = "cart.html";
     });
   }
 }
@@ -150,11 +167,10 @@ function sendForm() {
     let contact = {
       firstName: document.getElementById("firstName").value,
       lastName: document.getElementById("lastName").value,
-      adress: document.getElementById("address").value,
+      address: document.getElementById("address").value,
       city: document.getElementById("city").value,
       email: document.getElementById("email").value,
     };
-    console.log(contact);
 
     function checkFirstName() {
       let firstName = contact.firstName;
@@ -176,13 +192,13 @@ function sendForm() {
       }
     }
 
-    function checkAdress() {
+    function checkAddress() {
       let address = contact.address;
       if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(address)) {
         return true;
       } else {
         let errorMsg = document.getElementById("addressErrorMsg");
-        errorMsg.innerText = "Adresse invalide";
+        errorMsg.innerText = "Addresse invalide";
       }
     }
 
@@ -210,7 +226,7 @@ function sendForm() {
       if (
         checkFirstName() &&
         checkLastName() &&
-        checkAdress() &&
+        checkAddress() &&
         checkCity() &&
         checkEmail()
       ) {
@@ -220,9 +236,38 @@ function sendForm() {
         alert(
           "Formulaire invalide, veuillez verifier les informations entrées."
         );
+        return false;
       }
     }
     checkValidity();
+
+    products = [];
+    function getId() {
+      for (let p = 0; p < productBasket.length; p++) {
+        products.push(productBasket[p].id);
+      }
+    }
+    getId();
+
+    let cmdData = {
+      contact,
+      products,
+    };
+
+    let option = {
+      method: "POST",
+      body: JSON.stringify(cmdData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch("http://localhost:3000/api/products/order", option)
+      .then((response) => response.json())
+      .then((data) => {
+        localStorage.setItem("orderId", data.orderId);
+        document.location.href = "confirmation.html?id=" + data.orderId;
+      });
   });
 }
 sendForm();
