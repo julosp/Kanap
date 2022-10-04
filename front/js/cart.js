@@ -24,6 +24,7 @@ async function getProductById() {
     }
   } catch (err) {
     console.log(err);
+    alert("Erreur lors du chargement, veuillez réessayer");
   }
 
   //AJOUT DE LA COULEUR CHOISI AU PRODUIT FETCH
@@ -81,6 +82,7 @@ newHtml();
 
 //MODIFICATION DES QUANTITER
 async function modifyQuantity() {
+  //recuperation des produits
   let product = await getProductById();
   let itemQuantity = document.querySelectorAll(".itemQuantity");
   for (let i = 0; i < itemQuantity.length; i++) {
@@ -89,7 +91,7 @@ async function modifyQuantity() {
       let newQuantity = itemQuantity[i].value;
       product[i].quantity = newQuantity;
       productBasket[i].quantity = newQuantity;
-      if (productBasket[i].quantity === "0"){
+      if (productBasket[i].quantity === "0") {
         let deleteId = productBasket[i].id;
         let deleteColor = productBasket[i].color;
         productBasket = productBasket.filter(
@@ -97,6 +99,13 @@ async function modifyQuantity() {
         );
         localStorage.setItem("basket", JSON.stringify(productBasket));
         window.location.href = "cart.html";
+      } else if (
+        productBasket[i].quantity < "0" ||
+        productBasket[i].quantity >= "100"
+      ) {
+        alert(
+          "Quantité entrée invalide. Veuillez entrer une quantité entre 1 et 100."
+        );
       } else {
         localStorage.setItem("basket", JSON.stringify(productBasket));
         window.location.href = "cart.html";
@@ -179,6 +188,7 @@ function sendForm() {
       } else {
         let errorMsg = document.getElementById("firstNameErrorMsg");
         errorMsg.innerText = "Prénom invalide";
+        return false;
       }
     }
 
@@ -189,16 +199,18 @@ function sendForm() {
       } else {
         let errorMsg = document.getElementById("lastNameErrorMsg");
         errorMsg.innerText = "Nom invalide";
+        return false;
       }
     }
 
     function checkAddress() {
       let address = contact.address;
-      if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(address)) {
+      if (/^[^_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(address)) {
         return true;
       } else {
         let errorMsg = document.getElementById("addressErrorMsg");
         errorMsg.innerText = "Addresse invalide";
+        return false;
       }
     }
 
@@ -209,6 +221,7 @@ function sendForm() {
       } else {
         let errorMsg = document.getElementById("cityErrorMsg");
         errorMsg.innerText = "Ville invalide";
+        return false;
       }
     }
 
@@ -219,6 +232,7 @@ function sendForm() {
       } else {
         let errorMsg = document.getElementById("emailErrorMsg");
         errorMsg.innerText = "Email invalide";
+        return false;
       }
     }
 
@@ -241,33 +255,37 @@ function sendForm() {
     }
     checkValidity();
 
-    products = [];
-    function getId() {
-      for (let p = 0; p < productBasket.length; p++) {
-        products.push(productBasket[p].id);
+    if (checkValidity() === true) {
+      products = [];
+      function getId() {
+        for (let p = 0; p < productBasket.length; p++) {
+          products.push(productBasket[p].id);
+        }
       }
+      getId();
+
+      let cmdData = {
+        contact,
+        products,
+      };
+
+      let option = {
+        method: "POST",
+        body: JSON.stringify(cmdData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch("http://localhost:3000/api/products/order", option)
+        .then((response) => response.json())
+        .then((data) => {
+          localStorage.setItem("orderId", data.orderId);
+          document.location.href = "confirmation.html?id=" + data.orderId;
+        });
+    } else {
+      console.log("error");
     }
-    getId();
-
-    let cmdData = {
-      contact,
-      products,
-    };
-
-    let option = {
-      method: "POST",
-      body: JSON.stringify(cmdData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    fetch("http://localhost:3000/api/products/order", option)
-      .then((response) => response.json())
-      .then((data) => {
-        localStorage.setItem("orderId", data.orderId);
-        document.location.href = "confirmation.html?id=" + data.orderId;
-      });
   });
 }
 sendForm();

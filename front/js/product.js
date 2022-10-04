@@ -13,6 +13,7 @@ async function getProducts() {
     return await res.json();
   } catch (error) {
     console.log(error);
+    alert("Erreur lors du chargement, veuillez réessayer");
   }
 }
 /*RECUPERATION DU PRODUIT DEPUIS L'API
@@ -36,7 +37,14 @@ async function renderName() {
 }
 
 /*RECUPERATION DU PRODUIT DEPUIS L'API
-INSERTION DU NAME DANS LE HTML*/
+INSERTION DU NAME DANS LE TITLE DE LA BALISE HEAD*/
+async function renderPageTitle() {
+  let products = await getProducts();
+  document.title = products.name;
+}
+
+/*RECUPERATION DU PRODUIT DEPUIS L'API
+INSERTION DU PRIX DANS LE HTML*/
 async function renderPrice() {
   let products = await getProducts();
   let container = document.getElementById("price");
@@ -44,7 +52,7 @@ async function renderPrice() {
 }
 
 /*RECUPERATION DU PRODUIT DEPUIS L'API
-INSERTION DU NAME DANS LE HTML*/
+INSERTION DU DESCRIPTION DANS LE HTML*/
 async function renderDescription() {
   let products = await getProducts();
   let container = document.getElementById("description");
@@ -74,6 +82,7 @@ async function renderAll() {
   renderImg();
   renderDescription();
   renderColor();
+  renderPageTitle();
 }
 console.log(renderAll());
 
@@ -102,11 +111,11 @@ async function addToCart() {
   function checkQuantity() {
     let quantityInput = document.getElementById("quantity");
     let quantity = quantityInput.value;
-    if (quantity === "0") {
-      alert("Veuillez ajouter un nombre d'article");
+    if (quantity <= 0) {
+      alert("Veuillez ajouter un nombre d'article valide. (Minimum = 1)");
       return false;
-    } else if (quantity < "0") {
-      alert("Veuillez ajouter un nombre d'article valide");
+    } else if (quantity >= 101 ) {
+      alert("Veuillez ajouter un nombre d'article valide. (Maximum = 100)");
       return false;
     } else {
       return quantity;
@@ -142,24 +151,31 @@ async function addToCart() {
   }
 
   function getBasket() {
-    
+    //SI LOCALSTORAGE EST VIDE ON RETURN UNE ARRAY VIDE
     let basket = localStorage.getItem("basket");
     if (basket == null) {
       return [];
     } else {
+      //SINON ON PARSE
       return JSON.parse(basket);
     }
   }
+
   function addBasket(product) {
+    //ON RECUPERE LES PRODUIT DU LOCALSTORAGE
     let basket = getBasket();
+    //ON VA CHERCHER LES ID DES PRODUITS
     let foundProduct = basket.find((p) => p.id == product.id);
+    //ON VA CHERCHER LES COULEURS DES PRODUITS
     let foundColor = basket.find((p) => p.color == product.color);
+    //SI l'ID ET LA COULEUR SON DEJA PRESENTE, ON AJOUTE A LA QUANTIEE
     if (foundProduct != undefined && foundColor != undefined) {
-      var a =  parseInt(foundProduct.quantity);
+      var a = parseInt(foundProduct.quantity);
       var b = parseInt(quantity.value);
-      console.log(a+b)
-      foundProduct.quantity = a+b
+      console.log(a + b);
+      foundProduct.quantity = a + b;
     } else {
+      //SINON ON RECUPERE LA QUANTITEE ET ON PUSH DANS L'ARRAY DU LOCALSTORAGE
       product.quantity = checkQuantity();
       basket.push(product);
     }
