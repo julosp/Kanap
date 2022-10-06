@@ -1,3 +1,5 @@
+import { apiUrl, errorLoadingApi } from "./utils.js";
+
 /*ISOLER L'ID DU PRODUIT*/
 async function idByUrl() {
   var url = window.location.search;
@@ -7,13 +9,12 @@ async function idByUrl() {
 /*FETCH L'API ET AJOUTER L'ID ISOLER*/
 async function getProducts() {
   let id = await idByUrl();
-  let url = "http://localhost:3000/api/products/" + id;
+  let url = apiUrl + id;
   try {
     let res = await fetch(url);
     return await res.json();
   } catch (error) {
-    console.log(error);
-    alert("Erreur lors du chargement, veuillez réessayer");
+    errorLoadingApi();
   }
 }
 /*RECUPERATION DU PRODUIT DEPUIS L'API
@@ -86,7 +87,7 @@ async function renderAll() {
 }
 console.log(renderAll());
 
-cartBtn = document.getElementById("addToCart");
+let cartBtn = document.getElementById("addToCart");
 cartBtn.addEventListener("click", addToCart);
 
 async function addToCart() {
@@ -114,7 +115,7 @@ async function addToCart() {
     if (quantity <= 0) {
       alert("Veuillez ajouter un nombre d'article valide. (Minimum = 1)");
       return false;
-    } else if (quantity >= 101 ) {
+    } else if (quantity >= 101) {
       alert("Veuillez ajouter un nombre d'article valide. (Maximum = 100)");
       return false;
     } else {

@@ -84,30 +84,44 @@ newHtml();
 async function modifyQuantity() {
   //recuperation des produits
   let product = await getProductById();
+  //recuperer l'input de quantité
   let itemQuantity = document.querySelectorAll(".itemQuantity");
+  //loop dans les inputs
   for (let i = 0; i < itemQuantity.length; i++) {
+    //event listener au changement de l'utilisateur
     itemQuantity[i].addEventListener("change", (event) => {
       event.preventDefault();
+      //nouvelle quantité selon l'input
       let newQuantity = itemQuantity[i].value;
+      //remplacer quantité existante par nouvelle quantité
       product[i].quantity = newQuantity;
       productBasket[i].quantity = newQuantity;
+      //si l'input est 0
       if (productBasket[i].quantity === "0") {
+        //on va chercher l'id et la couleur
         let deleteId = productBasket[i].id;
         let deleteColor = productBasket[i].color;
+        //on filtre pour supprimer si l'id et la couleur sont les memes
         productBasket = productBasket.filter(
           (element) => element.id !== deleteId || element.color !== deleteColor
         );
+        //on enregistre le nouveau basket
         localStorage.setItem("basket", JSON.stringify(productBasket));
+        // on reload la page
         window.location.href = "cart.html";
       } else if (
+        //si la quantité est inférieur a 0 ou superieur a 100
         productBasket[i].quantity < "0" ||
-        productBasket[i].quantity >= "100"
+        productBasket[i].quantity > "100"
       ) {
+        //message d'erreur pour l'utilisateur
         alert(
           "Quantité entrée invalide. Veuillez entrer une quantité entre 1 et 100."
         );
       } else {
+        //sinon on save la nouvelle quantité de l'input dans le localstorage
         localStorage.setItem("basket", JSON.stringify(productBasket));
+        //on reload la page
         window.location.href = "cart.html";
       }
     });
@@ -116,16 +130,23 @@ async function modifyQuantity() {
 modifyQuantity();
 
 async function deleteProduct() {
+  //recuperation des produits
   let product = await getProductById();
+  //on recupere le btn delete
   let deleteBtn = document.querySelectorAll(".deleteItem");
+  //on loop a travers tt les btn delete
   for (let i = 0; i < deleteBtn.length; i++) {
+    //event listener click
     deleteBtn[i].addEventListener("click", (event) => {
       event.preventDefault();
+      //on recupere l'id et la couleur
       let deleteId = productBasket[i].id;
       let deleteColor = productBasket[i].color;
+      //on filtre pour supprimer si l'id et la couleur sont les memes
       productBasket = productBasket.filter(
         (element) => element.id !== deleteId || element.color !== deleteColor
       );
+      //on save et reload
       localStorage.setItem("basket", JSON.stringify(productBasket));
       window.location.href = "cart.html";
     });
@@ -137,12 +158,18 @@ let totalPrice = [];
 let totalQuantity = [];
 
 async function calculatePrice() {
+  //on recupere le produits
   let product = await getProductById();
+  //on loop a travers tout les produits
   for (let i = 0; i < product.length; i++) {
+    //on recup le prix et la quantité
     let price = product[i].price;
     let quantity = product[i].quantity;
+    // le prix x la quantité
     let total = price * quantity;
+    //on push dans l'array totalprice
     totalPrice.push(total);
+    // on additionne les prix dans l'array
     var priceTotal = totalPrice.reduce(function (a, b) {
       return a + b;
     }, 0);
@@ -153,14 +180,18 @@ async function calculatePrice() {
 calculatePrice();
 
 async function calculateQuantity() {
+  //recup des produits
   let product = await getProductById();
+  //loop a travers les produits
   for (let i = 0; i < product.length; i++) {
+    //recup des quantités
     let quantity = product[i].quantity;
+    //push des quantités dans l'array
     totalQuantity.push(quantity);
+    //addition des quantités
     var quantityTotal = totalQuantity.reduce(function (a, b) {
       return +a + +b;
     }, 0);
-    console.log(quantityTotal);
   }
   let htmlArticle = document.getElementById("totalQuantity");
   htmlArticle.textContent = quantityTotal;
@@ -169,10 +200,11 @@ async function calculateQuantity() {
 calculateQuantity();
 
 function sendForm() {
+  //recup du btn order et ajout d'un event listener
   let orderBtn = document.getElementById("order");
   orderBtn.addEventListener("click", (event) => {
     event.preventDefault();
-
+    //recup des inputs de l'utilisateur
     let contact = {
       firstName: document.getElementById("firstName").value,
       lastName: document.getElementById("lastName").value,
@@ -181,6 +213,7 @@ function sendForm() {
       email: document.getElementById("email").value,
     };
 
+    //verifications des inputs
     function checkFirstName() {
       let firstName = contact.firstName;
       if (/^[^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,20}$/.test(firstName)) {
@@ -237,6 +270,7 @@ function sendForm() {
     }
 
     function checkValidity() {
+      //si tout les inputs return true on save contact au local storage
       if (
         checkFirstName() &&
         checkLastName() &&
@@ -255,20 +289,24 @@ function sendForm() {
     }
     checkValidity();
 
+    //si le contact est valide on recupere l'id des produits
     if (checkValidity() === true) {
       products = [];
       function getId() {
+        //on loop a travers les produits et push l'id dans l'array
         for (let p = 0; p < productBasket.length; p++) {
           products.push(productBasket[p].id);
         }
       }
       getId();
 
+      //on crée un var avec le contact et les produits
       let cmdData = {
         contact,
         products,
       };
 
+      //method post avec le contact et les produits
       let option = {
         method: "POST",
         body: JSON.stringify(cmdData),
@@ -276,11 +314,13 @@ function sendForm() {
           "Content-Type": "application/json",
         },
       };
-
+      //on fetch l'api pour envoyer la method post
       fetch("http://localhost:3000/api/products/order", option)
         .then((response) => response.json())
         .then((data) => {
+          //on fois la reponse obtenu, id de commande, on l'enregistre au local storage
           localStorage.setItem("orderId", data.orderId);
+          //on redirige vers la page de comfirmation
           document.location.href = "confirmation.html?id=" + data.orderId;
         });
     } else {

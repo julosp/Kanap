@@ -1,12 +1,13 @@
+import { apiUrl, errorLoadingApi } from "./utils.js";
+
 //FETCH DE L'API
 async function getProducts() {
-  let url = "http://localhost:3000/api/products";
+  let url = apiUrl;
   try {
     let res = await fetch(url);
     return await res.json();
   } catch (error) {
-    console.log(error);
-    alert("Erreur lors du chargement, veuillez réessayer")
+    errorLoadingApi();
   }
 }
 
@@ -32,4 +33,3 @@ async function renderProducts() {
 }
 
 renderProducts();
-
