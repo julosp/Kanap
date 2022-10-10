@@ -111,8 +111,8 @@ async function modifyQuantity() {
         window.location.href = "cart.html";
       } else if (
         //si la quantité est inférieur a 0 ou superieur a 100
-        productBasket[i].quantity < "0" ||
-        productBasket[i].quantity > "100"
+        productBasket[i].quantity < 0 ||
+        productBasket[i].quantity > 100
       ) {
         //message d'erreur pour l'utilisateur
         alert(
@@ -281,9 +281,6 @@ function sendForm() {
         localStorage.setItem("contact", JSON.stringify(contact));
         return true;
       } else {
-        alert(
-          "Formulaire invalide, veuillez verifier les informations entrées."
-        );
         return false;
       }
     }
@@ -291,7 +288,7 @@ function sendForm() {
 
     //si le contact est valide on recupere l'id des produits
     if (checkValidity() === true) {
-      products = [];
+      let products = [];
       function getId() {
         //on loop a travers les produits et push l'id dans l'array
         for (let p = 0; p < productBasket.length; p++) {

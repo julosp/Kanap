@@ -85,7 +85,7 @@ async function renderAll() {
   renderColor();
   renderPageTitle();
 }
-console.log(renderAll());
+renderAll();
 
 let cartBtn = document.getElementById("addToCart");
 cartBtn.addEventListener("click", addToCart);
@@ -138,7 +138,6 @@ async function addToCart() {
     checkColor(),
     checkQuantity()
   );
-  console.log(productArray);
 
   //SI INPUT RETOURN FALSE PAS D'AJOUT AU LOCALSTORAGE
   let areFalsy = Object.values(productArray).every((value) => value);
