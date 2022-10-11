@@ -220,7 +220,7 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("firstNameErrorMsg");
-        errorMsg.innerText = "Prénom invalide";
+        errorMsg.innerText = "Prénom invalide. Exemple : Karim / Jean-François";
         return false;
       }
     }
@@ -231,7 +231,7 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("lastNameErrorMsg");
-        errorMsg.innerText = "Nom invalide";
+        errorMsg.innerText = "Nom invalide. Exemple : Dupont / Jean-Dupont / Dupont Jean";
         return false;
       }
     }
@@ -242,7 +242,7 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("addressErrorMsg");
-        errorMsg.innerText = "Addresse invalide";
+        errorMsg.innerText = "Addresse invalide. Exemple : 1 avenue des Champs Elysée";
         return false;
       }
     }
@@ -253,7 +253,7 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("cityErrorMsg");
-        errorMsg.innerText = "Ville invalide";
+        errorMsg.innerText = "Ville invalide. Exemple : Paris";
         return false;
       }
     }
@@ -264,7 +264,7 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("emailErrorMsg");
-        errorMsg.innerText = "Email invalide";
+        errorMsg.innerText = "Email invalide. Exemple : jean.dupont@hotmail.fr";
         return false;
       }
     }
