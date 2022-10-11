@@ -231,7 +231,8 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("lastNameErrorMsg");
-        errorMsg.innerText = "Nom invalide. Exemple : Dupont / Jean-Dupont / Dupont Jean";
+        errorMsg.innerText =
+          "Nom invalide. Exemple : Dupont / Jean-Dupont / Dupont Jean";
         return false;
       }
     }
@@ -242,7 +243,8 @@ function sendForm() {
         return true;
       } else {
         let errorMsg = document.getElementById("addressErrorMsg");
-        errorMsg.innerText = "Addresse invalide. Exemple : 1 avenue des Champs Elysée";
+        errorMsg.innerText =
+          "Addresse invalide. Exemple : 1 avenue des Champs Elysée";
         return false;
       }
     }
@@ -281,6 +283,7 @@ function sendForm() {
         localStorage.setItem("contact", JSON.stringify(contact));
         return true;
       } else {
+        alert("Formulaire invalide. Veuillez vérifer vos informations.");
         return false;
       }
     }
